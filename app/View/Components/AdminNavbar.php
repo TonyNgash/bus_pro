@@ -4,18 +4,16 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class Header extends Component
+class AdminNavbar extends Component
 {
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public $title;
-    public function __construct($data)
+    public function __construct()
     {
         //
-        $this->title = $data;
     }
 
     /**
@@ -25,6 +23,6 @@ class Header extends Component
      */
     public function render()
     {
-        return view('components.header');
+        return view('components.admin-navbar');
     }
 }
