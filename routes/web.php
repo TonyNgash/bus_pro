@@ -15,10 +15,7 @@ use App\Http\Controllers\AdminController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+Route::view('/','home');
 
 
 Route::post('auth/saveadmin',[AdminController::class,'saveadmin'])->name('auth.saveadmin');

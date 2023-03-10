@@ -52,7 +52,7 @@
                             <button class="btn btn-dark form-control" type="submit">Register</button>
                         </div>
                     </form>
-                    <small class="text-info">Already have an account? <a href="{{ route('auth.login') }}">Click here to login</a></small>
+                    {{--  <small class="text-info">Already have an account? <a href="{{ route('auth.login') }}">Click here to login</a></small>  --}}
                 </div>
             </div>
         </div>

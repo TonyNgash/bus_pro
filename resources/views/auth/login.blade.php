@@ -34,7 +34,7 @@
                             <button class="btn btn-info form-control" type="submit">Login</button>
                         </div>
                     </form>
-                    <small class="text-info">Don't have an account? <a href="{{ route('auth.register') }}">Click here</a></small>
+                    {{--  <small class="text-info">Don't have an account? <a href="{{ route('auth.register') }}">Click here</a></small>  --}}
                 </div>
             </div>
         </div>
