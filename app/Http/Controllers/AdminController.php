@@ -4,41 +4,86 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Models\Admin;
 
 class AdminController extends Controller
 {
-    public function showLoginForm()
+
+    public function login()
     {
-        return view('admin/login');
+        return view("auth.login");
     }
-
-    public function login(Request $request)
+    public function register()
     {
-        $credentials = $request->only('email', 'password');
+        return view("auth.register");
+    }
+    public function saveadmin(Request $request)
+    {
+        $request->validate([
+            'f_name'=>'required',
+            'l_name'=>'required',
+            'email'=>'required|email|unique:admins',
+            'phone'=>'required|min:10|max:12',
+            'password'=>'required|min:6|max:13'
+        ]);
 
-        if (Auth::guard('admins')->attempt($credentials)) {
-            return redirect('admin/dashboard');
-            // return view('admin/dashboard');
+        $admin = new Admin();
+        $admin->f_name = $request->f_name;
+        $admin->l_name = $request->l_name;
+        $admin->email = $request->email;
+        $admin->phone = $request->phone;
+        $admin->password = Hash::make($request->password);
+        $save = $admin->save();
+
+        if($save){
+            return back()->with('success','Admin Member Registered Successfuly!.');
+        }else{
+            return back()->with('fail','Something went wrong, try again later.');
         }
 
-        return redirect()->back()->withInput($request->only('email'))->withErrors([
-            'email' => 'Invalid email or password',
+    }
+    public function checkadmin(Request $request)
+    {
+
+        $request->validate([
+            'email'=>'required|email',
+            'password'=>'required|min:6|max:13'
         ]);
+
+        $userinfo = Admin::where('email','=',$request->email)->first();
+
+        if(!$userinfo){
+            return back()->with('fail','We do not recognize your email.');
+        }else{
+            if(Hash::check($request->password, $userinfo->password)){
+                $request->session()->put('loggeduser',$userinfo->admin_id);
+                return redirect('/admin/dashboard');
+            }else{
+                return back()->with('fail','Incorrect Password. Please Try Again.');
+            }
+        }
+
     }
-    public function dashboard()
-    {
-        return view('admin/dashboard');
+    public function logoutadmin(){
+        if(session('loggeduser')){
+            session()->pull('loggeduser');
+            return redirect('/auth/login');
+        }
+    }
+    public function dashboard(){
+        $userdata = ['loggeduserinfo'=>Admin::where('admin_id','=', session('loggeduser'))->first()];
+        return view('admin.dashboard',$userdata);
     }
 
-    public function logout()
-    {
-        Auth::guard('admins')->logout();
 
-        return view('admin/login');
-    }
+
+
+
+
+
     public function fakeUser(Request $request)
     {
         $admin = new Admin;
